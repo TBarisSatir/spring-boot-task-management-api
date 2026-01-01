@@ -1,5 +1,6 @@
 package io.github.tbarissatir.taskmanagement.model;
 
+import io.github.tbarissatir.taskmanagement.dto.TaskResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 
