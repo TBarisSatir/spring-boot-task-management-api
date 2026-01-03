@@ -6,31 +6,37 @@ async function fetchTasks() {
 
     try {
         const response = await fetch(API_BASE_URL);
-
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const tasks = await response.json();
+        const page = await response.json();
+        const tasks = page.content;
 
-        if (tasks.length === 0) {
+        if (!Array.isArray(tasks) || tasks.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-inbox"></i>
                     <p>No tasks created yet</p>
                 </div>
             `;
-        } else {
-            container.innerHTML = tasks.map(task => `
-                <div class="task-item">
-                    <div class="task-header">
-                        <div class="task-title">${escapeHtml(task.title)}</div>
-                        <span class="task-status status-${task.status}">${formatStatus(task.status)}</span>
-                    </div>
-                    <div class="task-description">${escapeHtml(task.description)}</div>
-                </div>
-            `).join('');
+            return;
         }
+
+        container.innerHTML = tasks.map(task => `
+            <div class="task-item">
+                <div class="task-header">
+                    <div class="task-title">${escapeHtml(task.title)}</div>
+                    <span class="task-status status-${task.status}">
+                        ${formatStatus(task.status)}
+                    </span>
+                </div>
+                <div class="task-description">
+                    ${escapeHtml(task.description)}
+                </div>
+            </div>
+        `).join('');
+
     } catch (error) {
         console.error('Error fetching tasks:', error);
         container.innerHTML = `
@@ -41,6 +47,7 @@ async function fetchTasks() {
         `;
     }
 }
+
 
 // Create a new task
 async function createTask(taskData) {
