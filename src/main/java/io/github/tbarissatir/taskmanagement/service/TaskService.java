@@ -20,7 +20,7 @@ public class TaskService {
         Task task = new Task();
         task.setTitle(dto.title());
         task.setDescription(dto.description());
-        task.setStatus(Task.Status.TODO);
+        task.setStatus(dto.status());
         return map(repository.save(task));
     }
 
