@@ -11,14 +11,13 @@ async function fetchTasks() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const page = await response.json();
-        const tasks = page.content; // ✅ artık array
+        const tasks = await response.json();
 
-        if (!tasks || tasks.length === 0) {
+        if (tasks.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-inbox"></i>
-                    <p>No tasks yet. Create your first task!</p>
+                    <p>No tasks created yet</p>
                 </div>
             `;
         } else {
@@ -26,13 +25,9 @@ async function fetchTasks() {
                 <div class="task-item">
                     <div class="task-header">
                         <div class="task-title">${escapeHtml(task.title)}</div>
-                        <span class="task-status status-${task.status}">
-                            ${formatStatus(task.status)}
-                        </span>
+                        <span class="task-status status-${task.status}">${formatStatus(task.status)}</span>
                     </div>
-                    <div class="task-description">
-                        ${escapeHtml(task.description)}
-                    </div>
+                    <div class="task-description">${escapeHtml(task.description)}</div>
                 </div>
             `).join('');
         }
@@ -41,13 +36,11 @@ async function fetchTasks() {
         container.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-exclamation-triangle"></i>
-                <p>Failed to load tasks. Please make sure the backend is running.</p>
+                <p>Unable to connect to backend service</p>
             </div>
         `;
     }
 }
-
-
 
 // Create a new task
 async function createTask(taskData) {
@@ -96,28 +89,32 @@ function escapeHtml(text) {
 
 // Handle form submission
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('taskForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const form = document.getElementById('taskForm');
 
-        const formData = {
-            title: document.getElementById('title').value.trim(),
-            description: document.getElementById('description').value.trim(),
-            status: document.getElementById('status').value
-        };
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        try {
-            await createTask(formData);
-            showMessage('Task created successfully!', 'success');
+            const formData = {
+                title: document.getElementById('title').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                status: document.getElementById('status').value
+            };
 
-            // Reset form
-            e.target.reset();
+            try {
+                await createTask(formData);
+                showMessage('Task created successfully', 'success');
 
-            // Refresh task list
-            fetchTasks();
-        } catch (error) {
-            showMessage(error.message || 'Failed to create task', 'error');
-        }
-    });
+                // Reset form
+                e.target.reset();
+
+                // Refresh task list
+                fetchTasks();
+            } catch (error) {
+                showMessage(error.message || 'Failed to create task', 'error');
+            }
+        });
+    }
 
     // Load tasks on page load
     fetchTasks();
