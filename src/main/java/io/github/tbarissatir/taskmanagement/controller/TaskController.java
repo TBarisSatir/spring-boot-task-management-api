@@ -39,4 +39,9 @@ public class TaskController {
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
+
+    @GetMapping("/{id}")
+    public TaskResponseDto getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
 }

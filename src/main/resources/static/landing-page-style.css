@@ -281,7 +281,6 @@ body {
     background-color: var(--color-bg-elevated);
     padding: calc(var(--spacing-unit) * 4);
     transition: all 0.2s;
-    cursor: pointer;
     border-left: 2px solid transparent;
 }
 
@@ -334,6 +333,40 @@ body {
     font-size: 14px;
     line-height: 1.7;
     color: var(--color-text-secondary);
+}
+
+/* Task Action Buttons */
+.task-actions {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 1.5);
+    margin-top: calc(var(--spacing-unit) * 2);
+}
+
+.btn-edit,
+.btn-delete {
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    padding: calc(var(--spacing-unit) * 1) calc(var(--spacing-unit) * 2);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.btn-edit:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background-color: rgba(255, 176, 32, 0.1);
+}
+
+.btn-delete:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: rgba(255, 47, 146, 0.1);
 }
 
 /* Loading State */

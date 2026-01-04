@@ -48,4 +48,10 @@ public class TaskService {
         repository.deleteById(id);
     }
 
+    public TaskResponseDto getById(Long id) {
+        Task task = repository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+        return map(task);
+    }
+
 }
