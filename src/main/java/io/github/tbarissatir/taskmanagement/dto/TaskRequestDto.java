@@ -12,4 +12,8 @@ public record TaskRequestDto(
         String description,
 
         Task.Status status
-) {}
+) {public TaskRequestDto {
+        if (description != null) {
+                description = description.trim();
+        }
+}}
