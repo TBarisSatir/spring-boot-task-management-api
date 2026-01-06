@@ -1,5 +1,6 @@
 const API_BASE_URL = '/api/tasks';
 let editingTaskId = null;
+const normalizeText = (v) => v?.trim() ?? '';
 
 // Fetch and display all tasks
 async function fetchTasks() {
@@ -116,7 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const payload = {
                 title: document.getElementById('title').value.trim(),
-                description: document.getElementById('description').value.trim(),
+                description: normalizeText(
+                    document.getElementById('description').value
+                ),
                 status: document.getElementById('status').value
             };
 

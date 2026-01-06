@@ -19,7 +19,9 @@ public class TaskService {
     public TaskResponseDto create(TaskRequestDto dto) {
         Task task = new Task();
         task.setTitle(dto.title());
-        task.setDescription(dto.description());
+        task.setDescription(
+                dto.description() == null ? "" : dto.description()
+        );
         task.setStatus(dto.status());
         return map(repository.save(task));
     }
