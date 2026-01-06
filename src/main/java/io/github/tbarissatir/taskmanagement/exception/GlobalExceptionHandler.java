@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import io.github.tbarissatir.taskmanagement.service.RuleViolationException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -32,5 +33,12 @@ public class GlobalExceptionHandler {
         body.put("message", message);
         body.put("path", req.getDescription(false).replace("uri=", ""));
         return ResponseEntity.status(status).body(body);
+    }
+
+    @ExceptionHandler(RuleViolationException.class)
+    public ResponseEntity<?> handleRuleViolation(RuleViolationException ex) {
+        return ResponseEntity.badRequest().body(Map.of(
+                "error", ex.getMessage()
+        ));
     }
 }

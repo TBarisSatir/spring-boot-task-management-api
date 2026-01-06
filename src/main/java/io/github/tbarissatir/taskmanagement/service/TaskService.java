@@ -9,22 +9,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import io.github.tbarissatir.taskmanagement.exception.TaskNotFoundException;
+import io.github.tbarissatir.taskmanagement.client.RuleEngineClient;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
 
+    private final RuleEngineClient ruleEngineClient;
     private final TaskRepository repository;
-
-    public TaskResponseDto create(TaskRequestDto dto) {
-        Task task = new Task();
-        task.setTitle(dto.title());
-        task.setDescription(
-                dto.description() == null ? "" : dto.description()
-        );
-        task.setStatus(dto.status());
-        return map(repository.save(task));
-    }
 
     public Page<TaskResponseDto> getAll(Pageable pageable) {
         return repository.findAll(pageable).map(this::map);
@@ -55,5 +47,22 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
         return map(task);
     }
+    public TaskResponseDto create(TaskRequestDto dto) {
+
+        // RULE ENGINE CALL
+        var ruleResult = ruleEngineClient.check(dto.description());
+
+        if (ruleResult != null && ruleResult.isMatched()) {
+            throw new RuleViolationException(ruleResult.getRuleName());
+        }
+
+        Task task = new Task();
+        task.setTitle(dto.title());
+        task.setDescription(dto.description());
+        task.setStatus(dto.status());
+
+        return map(repository.save(task));
+    }
+
 
 }
